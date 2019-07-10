@@ -44,14 +44,14 @@ export class Clock {
     this.floatWin.show()
   }
 
-  public disable() {
+  public async disable() {
     this.status = false
-    this.floatWin.hide()
+    await this.floatWin.hide()
   }
 
-  public tmpDisable() {
+  public async tmpDisable() {
     if (this.status) {
-      this.floatWin.hide()
+      await this.floatWin.hide()
     }
   }
 

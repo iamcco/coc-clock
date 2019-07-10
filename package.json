@@ -1,6 +1,6 @@
 {
   "name": "coc-clock",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Big Clock for Neovim",
   "keywords": [
     "coc.nvim",

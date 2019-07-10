@@ -165,10 +165,11 @@ export class FloatWindow {
     })
   }
 
-  public hide() {
+  public async hide() {
     this.source$.next({
       action: 'disable'
     })
+    await this.close()
   }
 
   public redraw() {
