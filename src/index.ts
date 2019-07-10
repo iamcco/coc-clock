@@ -52,7 +52,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       event: 'TabEnter ',
       request: true,
       callback: () => {
-        clock.enable()
+        clock.resume()
       }
     })
   )
@@ -63,6 +63,20 @@ export async function activate(context: ExtensionContext): Promise<void> {
       request: false,
       callback: () => {
         clock.redraw()
+      }
+    })
+  )
+
+  subscriptions.push(
+    workspace.registerAutocmd({
+      event: 'QuitPre ',
+      request: true,
+      callback: async () => {
+        const tab = await workspace.nvim.tabpage
+        const wins = await tab.windows
+        if (wins && wins.length <= 2) {
+          clock.tmpDisable()
+        }
       }
     })
   )
