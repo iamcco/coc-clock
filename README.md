@@ -2,6 +2,8 @@
 
 coc extensions of [clock.nvim](https://github.com/iamcco/clock.nvim)
 
+![screenshot](https://user-images.githubusercontent.com/5492542/53694533-3d813e80-3deb-11e9-98a7-1fd9f58b0ba4.png)
+
 ## Install
 
 ``` vim
