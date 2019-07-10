@@ -1,6 +1,6 @@
 {
   "name": "coc-clock",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Big Clock for Neovim",
   "keywords": [
     "coc.nvim",
@@ -26,7 +26,7 @@
         "clock.enable": {
           "type": "boolean",
           "default": false,
-          "description": "Enable clock"
+          "description": "Enable clock when open neovim"
         },
         "clock.color": {
           "type": "string",

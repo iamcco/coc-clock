@@ -10,6 +10,11 @@ coc extensions of [clock.nvim](https://github.com/iamcco/clock.nvim)
 :CocInstall coc-clock
 ```
 
+## Coc Commands
+
+- `clock.enable`  enable clock
+- `clock.disable` disable clock
+
 ## Options
 
 config:
@@ -18,7 +23,7 @@ config:
 "clock.enable": {
   "type": "boolean",
   "default": true,
-  "description": "Enable clock"
+  "description": "Enable clock when open neovim"
 },
 "clock.color": {
   "type": "string",
