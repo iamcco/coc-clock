@@ -1,14 +1,14 @@
 {
-  "name": "coc-status",
+  "name": "coc-clock",
   "version": "0.0.1",
-  "description": "notification for coc",
+  "description": "Big Clock for Neovim",
   "keywords": [
     "coc.nvim",
-    "notification",
-    "status"
+    "clock",
+    "neovim"
   ],
   "main": "./out/index.js",
-  "repository": "https://github.com/iamcco/coc-status",
+  "repository": "https://github.com/iamcco/coc-clock",
   "author": "iamcco <ooiss@qq.com>",
   "license": "MIT",
   "private": false,
@@ -20,15 +20,35 @@
   ],
   "contributes": {
     "configuration": {
-      "title": "Coc-status Configuration",
+      "title": "Coc-clock Configuration",
       "type": "object",
       "properties": {
-        "coc-status.enable": {
+        "clock.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Enable notification"
+          "description": "Enable clock"
         },
-        "coc-status.trace.server": {
+        "clock.color": {
+          "type": "string",
+          "default": "",
+          "description": "clock color, default is Normal highlight group"
+        },
+        "clock.winblend": {
+          "type": "number",
+          "default": "100",
+          "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100"
+        },
+        "clock.top": {
+          "type": "number",
+          "default": "1",
+          "description": "position distance to top"
+        },
+        "clock.right": {
+          "type": "number",
+          "default": "1",
+          "description": "position distance to right"
+        },
+        "clock.trace.server": {
           "type": "string",
           "default": "off",
           "enum": [
@@ -36,7 +56,7 @@
             "messages",
             "verbose"
           ],
-          "description": "Trace level of coc-status"
+          "description": "Trace level of coc-clock"
         }
       }
     }
@@ -50,6 +70,7 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "rxjs": "^6.5.2",
     "vscode-languageserver-protocol": "^3.14.1"
   }
 }
