@@ -33,7 +33,7 @@ config:
 "clock.winblend": {
   "type": "number",
   "default": 100,
-  "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100"
+  "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100. check `:echo exists('+winblend')` to see if your neovim support this option."
 },
 "clock.top": {
   "type": "number",

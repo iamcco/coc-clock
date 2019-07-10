@@ -1,6 +1,6 @@
 {
   "name": "coc-clock",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Big Clock for Neovim",
   "keywords": [
     "coc.nvim",
@@ -36,7 +36,7 @@
         "clock.winblend": {
           "type": "number",
           "default": 100,
-          "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100"
+          "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100. check `:echo exists('+winblend')` to see if your neovim support this option."
         },
         "clock.top": {
           "type": "number",

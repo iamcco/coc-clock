@@ -120,8 +120,12 @@ export class FloatWindow {
     )
     this.win = win
 
+    const isUpportWinblend = await this.nvim.call('exists', '+winblend')
+    if (isUpportWinblend) {
+      await win.setOption('winblend', this.winblend)
+    }
+
     this.nvim.pauseNotification()
-    await win.setOption('winblend', this.winblend)
     await win.setOption('number', false)
     await win.setOption('relativenumber', false)
     await win.setOption('cursorline', false)
