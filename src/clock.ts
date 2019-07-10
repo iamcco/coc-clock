@@ -61,6 +61,12 @@ export class Clock {
     }
   }
 
+  public redraw() {
+    if (this.status) {
+      this.floatWin.redraw()
+    }
+  }
+
   public dispose() {
     this.floatWin.dispose()
   }

@@ -1,6 +1,6 @@
 import { Neovim, Window, Buffer as NVIMBuffer, OutputChannel } from 'coc.nvim';
 import { Subject, Subscription, from, timer } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, switchMap } from 'rxjs/operators';
 import { fronts } from './font'
 
 type Params = {
@@ -25,7 +25,7 @@ export class FloatWindow {
     private output: OutputChannel
   ) {
     this.subscription = this.source$.pipe(
-      concatMap(({ action }) => {
+      switchMap(({ action }) => {
         if (this.output) {
           this.output.appendLine(`action: ${action}`)
         }
@@ -74,6 +74,20 @@ export class FloatWindow {
     }
   }
 
+  private async updateSize(win: Window) {
+    const isValid = await win.valid
+    if (!isValid) {
+      return
+    }
+
+    const winConfig = await this.getWinConfig()
+
+    this.nvim.call('nvim_win_set_config', [
+      win!.id,
+      winConfig
+    ])
+  }
+
   private async createBuffer() {
     if (this.buf) {
       const isValid = await this.buf.valid
@@ -97,19 +111,23 @@ export class FloatWindow {
     const win = await this.nvim.openFloatWindow(
       this.buf!,
       false,
-      winConfig
+      {
+        ...winConfig,
+        width: 1,
+        height: 1,
+        style: 'minimal'
+      }
     )
     this.win = win
 
     this.nvim.pauseNotification()
+    await win.setOption('winblend', this.winblend)
     await win.setOption('number', false)
-    await win.setOption('wrap', false)
     await win.setOption('relativenumber', false)
     await win.setOption('cursorline', false)
     await win.setOption('cursorcolumn', false)
     await win.setOption('conceallevel', 2)
     await win.setOption('signcolumn', 'no')
-    await win.setOption('winblend', this.winblend)
     await win.setOption('winhighlight', 'Normal:ClockNormal')
     await this.nvim.resumeNotification()
     return true
@@ -136,13 +154,8 @@ export class FloatWindow {
 
     const { win } = this
 
-    if (!isNewWin) {
-      const winConfig = await this.getWinConfig()
-
-      this.nvim.call('nvim_win_set_config', [
-        win!.id,
-        winConfig
-      ])
+    if (isNewWin) {
+      await this.updateSize(win)
     }
   }
 
@@ -156,6 +169,12 @@ export class FloatWindow {
     this.source$.next({
       action: 'disable'
     })
+  }
+
+  public redraw() {
+    if (this.win) {
+      this.updateSize(this.win)
+    }
   }
 
   public async dispose() {

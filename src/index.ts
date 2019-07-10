@@ -56,4 +56,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
       }
     })
   )
+
+  subscriptions.push(
+    workspace.registerAutocmd({
+      event: 'VimResized ',
+      request: false,
+      callback: () => {
+        clock.redraw()
+      }
+    })
+  )
 }
