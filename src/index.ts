@@ -75,7 +75,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         const tab = await workspace.nvim.tabpage
         const wins = await tab.windows
         if (wins && wins.length <= 2) {
-          clock.tmpDisable()
+          await clock.tmpDisable()
         }
       }
     })
