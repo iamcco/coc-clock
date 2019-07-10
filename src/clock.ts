@@ -1,4 +1,4 @@
-import { Neovim, WorkspaceConfiguration } from 'coc.nvim'
+import { Neovim, WorkspaceConfiguration, OutputChannel } from 'coc.nvim'
 import { FloatWindow } from './float-window'
 
 export class Clock {
@@ -6,12 +6,23 @@ export class Clock {
   private floatWin: FloatWindow
   constructor(
     private nvim: Neovim,
-    private config: WorkspaceConfiguration
+    config: WorkspaceConfiguration,
+    output: OutputChannel
   ) {
     const enable = config.get<boolean>('enable', false)
     const top = config.get<number>('top', 1)
     const right = config.get<number>('right', 1)
     const winblend = config.get<number>('winblend', 100)
+
+    if (output) {
+      output.appendLine([
+        'config:',
+        `enable: ${enable}`,
+        `top: ${top}`,
+        `right: ${right}`,
+        `winblend: ${winblend}`
+      ].join('\n'))
+    }
 
     this.status = enable
 
@@ -19,7 +30,8 @@ export class Clock {
       this.nvim,
       top,
       right,
-      Math.max(Math.min(100, winblend), 0)
+      Math.max(Math.min(100, winblend), 0),
+      output
     )
 
     if (enable) {

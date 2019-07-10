@@ -1,6 +1,6 @@
-import { Neovim, Window, Buffer as NVIMBuffer } from 'coc.nvim';
+import { Neovim, Window, Buffer as NVIMBuffer, OutputChannel } from 'coc.nvim';
 import { Subject, Subscription, from, timer } from 'rxjs';
-import { concatMap, switchMap, scan, filter, map } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 import { fronts } from './font'
 
 type Params = {
@@ -21,22 +21,25 @@ export class FloatWindow {
     private nvim: Neovim,
     private top: number,
     private right: number,
-    private winblend: number
+    private winblend: number,
+    private output: OutputChannel
   ) {
     this.subscription = this.source$.pipe(
       concatMap(({ action }) => {
-        if (action === 'enable') {
+        if (this.output) {
+          this.output.appendLine(`action: ${action}`)
+        }
+        if (action === 'disable') {
           return from(this.close())
         }
         return timer(0, 1000).pipe(
           concatMap(() => {
-            return from(async () => {
-              const { nvim } = this
+            return from((async () => {
               const now = new Date()
               const hours = align(now.getHours())
               const minutes = align(now.getMinutes())
               const seconds = align(now.getSeconds())
-              const lines = fronts[hours[0]]
+              const lines: string[] = fronts[hours[0]]
                 .map((item: string[], idx: number) => {
                   const hour = `${item.join('')}${fronts[hours[1]][idx].join('')}`
                   const separator = fronts['separator'][idx].join('')
@@ -44,15 +47,20 @@ export class FloatWindow {
                   const second = `${fronts[seconds[0]][idx].join('')}${fronts[seconds[1]][idx].join('')}`
                   return `${hour}${separator}${minute}${separator}${second}`.trimRight()
                 })
+              if (this.output) {
+                this.output.appendLine(
+                  lines.join('\n')
+                )
+              }
               await this.update(lines)
-            })
+            })())
           })
         )
       }),
     ).subscribe(() => {})
   }
 
-  private async getWinConfig (content: string): Promise<any> {
+  private async getWinConfig (): Promise<any> {
     const col = await this.nvim.getOption('columns') as number
 
     return {
@@ -76,7 +84,7 @@ export class FloatWindow {
     this.buf = await this.nvim.createNewBuffer(false, true)
   }
 
-  private async createWindow(content: string): Promise<boolean> {
+  private async createWindow(): Promise<boolean> {
     if (this.win) {
       const isValid = await this.win.valid
       if (isValid) {
@@ -84,7 +92,7 @@ export class FloatWindow {
       }
     }
 
-    const winConfig = await this.getWinConfig(content)
+    const winConfig = await this.getWinConfig()
 
     const win = await this.nvim.openFloatWindow(
       this.buf!,
@@ -101,6 +109,7 @@ export class FloatWindow {
     await win.setOption('cursorcolumn', false)
     await win.setOption('conceallevel', 2)
     await win.setOption('signcolumn', 'no')
+    await win.setOption('winblend', this.winblend)
     await win.setOption('winhighlight', 'Normal:ClockNormal')
     await this.nvim.resumeNotification()
     return true
@@ -117,18 +126,18 @@ export class FloatWindow {
     }
   }
 
-  private async update (content: string) {
+  private async update (content: string[]) {
 
     await this.createBuffer()
 
     await this.buf!.setLines(content, { start: 0, end: -1 })
 
-    const isNewWin = await this.createWindow(content)
+    const isNewWin = await this.createWindow()
 
     const { win } = this
 
     if (!isNewWin) {
-      const winConfig = await this.getWinConfig(content)
+      const winConfig = await this.getWinConfig()
 
       this.nvim.call('nvim_win_set_config', [
         win!.id,

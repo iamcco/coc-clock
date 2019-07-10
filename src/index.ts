@@ -15,21 +15,24 @@ export async function activate(context: ExtensionContext): Promise<void> {
   workspace.nvim.command(cmd)
 
   const trace = config.get<'off' | 'message' | 'verbose'>('trace.server', 'off')
-  let output = trace !== 'off' ? workspace.createOutputChannel('clock') : undefined
+  const output = trace !== 'off' ? workspace.createOutputChannel('clock') : undefined
 
   const clock = new Clock(
     workspace.nvim,
-    config
+    config,
+    output
   )
 
+  subscriptions.push(clock)
+
   subscriptions.push(
-    commands.registerCommand('ClockEnable', () => {
+    commands.registerCommand('clock.enable', () => {
       clock.enable()
     })
   )
 
   subscriptions.push(
-    commands.registerCommand('ClockDisable', () => {
+    commands.registerCommand('clock.disable', () => {
       clock.disable()
     })
   )
