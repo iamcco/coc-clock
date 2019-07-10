@@ -1,5 +1,5 @@
 import { Neovim, Window, Buffer as NVIMBuffer, OutputChannel } from 'coc.nvim';
-import { Subject, Subscription, from, timer } from 'rxjs';
+import { Subject, Subscription, from, timer, of } from 'rxjs';
 import { concatMap, switchMap } from 'rxjs/operators';
 import { fronts } from './font'
 
@@ -30,7 +30,7 @@ export class FloatWindow {
           this.output.appendLine(`action: ${action}`)
         }
         if (action === 'disable') {
-          return from(this.close())
+          return of(undefined)
         }
         return timer(0, 1000).pipe(
           concatMap(() => {
@@ -172,9 +172,9 @@ export class FloatWindow {
     await this.close()
   }
 
-  public redraw() {
+  public async redraw() {
     if (this.win) {
-      this.updateSize(this.win)
+      await this.updateSize(this.win)
     }
   }
 

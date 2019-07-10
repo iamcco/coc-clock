@@ -41,8 +41,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.registerAutocmd({
       event: 'TabLeave',
       request: true,
-      callback: () => {
-        clock.tmpDisable()
+      callback: async () => {
+        await clock.tmpDisable()
       }
     })
   )
@@ -51,8 +51,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.registerAutocmd({
       event: 'TabEnter ',
       request: true,
-      callback: () => {
-        clock.resume()
+      callback: async () => {
+        await clock.resume()
       }
     })
   )
@@ -61,8 +61,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.registerAutocmd({
       event: 'VimResized ',
       request: false,
-      callback: () => {
-        clock.redraw()
+      callback: async () => {
+        await clock.redraw()
       }
     })
   )
