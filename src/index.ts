@@ -26,14 +26,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
   subscriptions.push(clock)
 
   subscriptions.push(
-    commands.registerCommand('clock.enable', () => {
-      clock.enable()
+    commands.registerCommand('clock.enable', async () => {
+      await clock.enable()
     })
   )
 
   subscriptions.push(
-    commands.registerCommand('clock.disable', () => {
-      clock.disable()
+    commands.registerCommand('clock.disable', async () => {
+      await clock.disable()
     })
   )
 

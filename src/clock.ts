@@ -39,9 +39,9 @@ export class Clock {
     }
   }
 
-  public enable() {
+  public async enable() {
     this.status = true
-    this.floatWin.show()
+    await this.floatWin.show()
   }
 
   public async disable() {
@@ -55,19 +55,19 @@ export class Clock {
     }
   }
 
-  public resume() {
+  public async resume() {
     if (this.status) {
-      this.floatWin.show()
+      await this.floatWin.show()
     }
   }
 
-  public redraw() {
+  public async redraw() {
     if (this.status) {
-      this.floatWin.redraw()
+      await this.floatWin.redraw()
     }
   }
 
-  public dispose() {
-    this.floatWin.dispose()
+  public async dispose() {
+    await this.floatWin.dispose()
   }
 }
