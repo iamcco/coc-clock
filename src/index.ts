@@ -26,14 +26,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
   subscriptions.push(clock)
 
   subscriptions.push(
-    commands.registerCommand('clock.enable', () => {
-      clock.enable()
+    commands.registerCommand('clock.enable', async () => {
+      await clock.enable()
     })
   )
 
   subscriptions.push(
-    commands.registerCommand('clock.disable', () => {
-      clock.disable()
+    commands.registerCommand('clock.disable', async () => {
+      await clock.disable()
     })
   )
 
@@ -41,8 +41,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.registerAutocmd({
       event: 'TabLeave',
       request: true,
-      callback: () => {
-        clock.tmpDisable()
+      callback: async () => {
+        await clock.tmpDisable()
       }
     })
   )
@@ -51,8 +51,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.registerAutocmd({
       event: 'TabEnter ',
       request: true,
-      callback: () => {
-        clock.resume()
+      callback: async () => {
+        await clock.resume()
       }
     })
   )
@@ -61,8 +61,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.registerAutocmd({
       event: 'VimResized ',
       request: false,
-      callback: () => {
-        clock.redraw()
+      callback: async () => {
+        await clock.redraw()
       }
     })
   )

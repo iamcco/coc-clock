@@ -1,10 +1,11 @@
 import { Neovim, Window, Buffer as NVIMBuffer, OutputChannel } from 'coc.nvim';
 import { Subject, Subscription, from, timer } from 'rxjs';
-import { concatMap, switchMap } from 'rxjs/operators';
+import { concatMap, switchMap, tap } from 'rxjs/operators';
 import { fronts } from './font'
 
 type Params = {
-  action: 'enable' | 'disable'
+  action: 'enable' | 'disable',
+  resolve: () => void
 }
 
 function align(num: string | number): string {
@@ -25,12 +26,14 @@ export class FloatWindow {
     private output: OutputChannel
   ) {
     this.subscription = this.source$.pipe(
-      switchMap(({ action }) => {
+      switchMap(({ action, resolve }) => {
         if (this.output) {
           this.output.appendLine(`action: ${action}`)
         }
         if (action === 'disable') {
-          return from(this.close())
+          return from(this.close()).pipe(
+            tap(() => resolve())
+          )
         }
         return timer(0, 1000).pipe(
           concatMap(() => {
@@ -53,6 +56,10 @@ export class FloatWindow {
                 )
               }
               await this.update(lines)
+              if (resolve) {
+                resolve()
+                resolve = undefined
+              }
             })())
           })
         )
@@ -120,8 +127,12 @@ export class FloatWindow {
     )
     this.win = win
 
+    const isUpportWinblend = await this.nvim.call('exists', '+winblend')
+    if (isUpportWinblend) {
+      await win.setOption('winblend', this.winblend)
+    }
+
     this.nvim.pauseNotification()
-    await win.setOption('winblend', this.winblend)
     await win.setOption('number', false)
     await win.setOption('relativenumber', false)
     await win.setOption('cursorline', false)
@@ -135,12 +146,12 @@ export class FloatWindow {
 
   private async close() {
     const { win } = this
-    this.win = undefined
     if (win) {
       const isValid = await win.valid
       if (isValid) {
         await win.close(true)
       }
+      this.win = undefined
     }
   }
 
@@ -160,21 +171,26 @@ export class FloatWindow {
   }
 
   public show() {
-    this.source$.next({
-      action: 'enable'
+    return new Promise((resolve) => {
+      this.source$.next({
+        action: 'enable',
+        resolve
+      })
     })
   }
 
-  public async hide() {
-    this.source$.next({
-      action: 'disable'
+  public hide() {
+    return new Promise((resolve) => {
+      this.source$.next({
+        action: 'disable',
+        resolve
+      })
     })
-    await this.close()
   }
 
-  public redraw() {
+  public async redraw() {
     if (this.win) {
-      this.updateSize(this.win)
+      await this.updateSize(this.win)
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "coc-clock",
-  "version": "0.0.6",
+  "version": "0.0.11",
   "description": "Big Clock for Neovim",
   "keywords": [
     "coc.nvim",
@@ -26,7 +26,7 @@
         "clock.enable": {
           "type": "boolean",
           "default": false,
-          "description": "Enable clock"
+          "description": "Enable clock when open neovim"
         },
         "clock.color": {
           "type": "string",
@@ -36,7 +36,7 @@
         "clock.winblend": {
           "type": "number",
           "default": 100,
-          "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100"
+          "description": "config opacity of floating window background 0-100 from fully opaque to transparent, default is 100. check `:echo exists('+winblend')` to see if your neovim support this option."
         },
         "clock.top": {
           "type": "number",
@@ -66,10 +66,10 @@
   },
   "devDependencies": {
     "@types/node": "^12.0.4",
-    "coc.nvim": "^0.0.71",
+    "coc.nvim": "^0.0.72",
+    "typescript": "^3.4.5",
     "rxjs": "^6.5.2",
     "ts-loader": "^6.2.0",
-    "typescript": "^3.4.5",
     "vscode-languageserver-protocol": "^3.14.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
