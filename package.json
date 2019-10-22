@@ -1,6 +1,6 @@
 {
   "name": "coc-clock",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Big Clock for Neovim",
   "keywords": [
     "coc.nvim",
@@ -62,15 +62,16 @@
     }
   },
   "scripts": {
-    "build": "tsc -p ./"
+    "build": "rm -rf ./out && webpack"
   },
   "devDependencies": {
     "@types/node": "^12.0.4",
     "coc.nvim": "^0.0.71",
-    "typescript": "^3.4.5"
-  },
-  "dependencies": {
     "rxjs": "^6.5.2",
-    "vscode-languageserver-protocol": "^3.14.1"
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.4.5",
+    "vscode-languageserver-protocol": "^3.14.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
   }
 }
